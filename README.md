@@ -1,2 +1,93 @@
-# blick-treino
-Repositório contendo notebooks que realizam o treinamento de segmentação e classificação
+# Blick IA: segmentação e classificação da saúde de plantas de milho
+
+Parte de visão computacional do projeto Blick, TCC do Instituto Mauá de Tecnologia (grupo CMD04, 2026). O sistema completo tem um robô de coleta georreferenciada, uma API na nuvem e um dashboard. Este repositório reúne apenas os dois modelos de rede neural, os notebooks de treino e os resultados.
+
+## O que o pipeline faz
+
+Cada foto passa por três estágios:
+
+1. **Segmentação de instâncias** (YOLO26n-seg): encontra cada planta de milho e devolve um polígono por planta.
+2. **Isolamento**: cada polígono é usado para recortar a planta e pintar de preto tudo que está fora dela.
+3. **Classificação binária** (YOLO26n-cls): cada recorte é classificado como `healthy` ou `unhealthy`, com a confiança.
+
+**Regra por imagem:** basta uma planta `unhealthy` para a foto inteira ser `unhealthy`. Se nenhuma planta for detectada, o veredito é "sem milho detectado".
+
+## Dados
+
+| Conjunto | Treino | Validação | Teste | Total |
+|---|---|---|---|---|
+| Segmentação (imagens) | 4.988 | 1.222 | 673 | 6.883 |
+| Instâncias de milho | 30.883 | 6.050 | 3.795 | 40.728 |
+| Imagens sem milho | 496 | 133 | 63 | 692 |
+| Classificação (recortes) | 17.649 | 5.054 | 2.517 | 25.220 |
+| healthy | 15.905 | 4.533 | 2.267 | 22.705 |
+| unhealthy | 1.744 | 521 | 250 | 2.515 |
+
+- **Segmentação:** 2.131 das 6.883 imagens são fotos do campo de milho do IMT (câmera ZED, 1080p). As demais vêm de um dataset público do Roboflow. Anotação por polígonos, uma classe (`corn`).
+- **Classificação:** só fotos de campo. Os 25.220 recortes vêm de 2.460 fotos distintas e foram gerados pelo próprio segmentador, com fundo preto.
+- **Rótulo `unhealthy`:** plantas com um adesivo fixado na folha simulando sintoma (retângulo ou bolinha, amarelo ou marrom). Plantas sem adesivo são `healthy`.
+- Os arquivos de recorte seguem o padrão `<id_da_foto_original>_plant<n>.jpg`.
+
+O dataset não está no repositório (tamanho e licença das imagens públicas).
+
+## Treinamento
+
+| | Segmentador | Classificador |
+|---|---|---|
+| Modelo | yolo26n-seg (2,69 M parâmetros) | yolo26n-cls (1,53 M parâmetros) |
+| Pré-treino | pesos da Ultralytics | pesos da Ultralytics |
+| Entrada | 640×640 | 224×224 |
+| Épocas (máx.) | 100 | 100 |
+| Paciência | 20 | 20 |
+| Lote | 16 | 64 |
+| Épocas efetivas | 100 | 72 (parada antecipada) |
+| GPU | Tesla T4 (Colab) | Tesla T4 (Colab) |
+
+Demais hiperparâmetros no padrão da Ultralytics (lr0 = 0,01, semente 0). O `args.yaml` completo de cada treino está em `resultados/`.
+
+## Resultados (conjunto de teste)
+
+**Segmentador** (limiar de confiança 0,40):
+
+| Métrica | Máscara | Caixa |
+|---|---|---|
+| Precisão | 0,854 | 0,891 |
+| Recall | 0,672 | 0,702 |
+| mAP@50 | 0,658 | 0,695 |
+| mAP@50-95 | 0,388 | 0,532 |
+
+Matriz de confusão (caixa): 2.687 plantas encontradas, 303 falsos positivos, 1.108 plantas não encontradas.
+
+**Classificador:**
+
+| Classe | Precisão | Recall | F1 | Suporte |
+|---|---|---|---|---|
+| healthy | 0,9829 | 0,9890 | 0,9859 | 2.267 |
+| unhealthy | 0,8941 | 0,8440 | 0,8683 | 250 |
+| macro | 0,9385 | 0,9165 | 0,9271 | 2.517 |
+
+Acurácia 97,46%, AUC-ROC 0,9756, AP da classe `unhealthy` 0,9252. Matriz de confusão: 2.242 / 25 / 39 / 211.
+
+As curvas de loss (treino vs validação) dos dois modelos estão em `resultados/`.
+
+## Como rodar
+
+1. Abrir `notebooks/pipeline_milho_completo.ipynb` no Google Colab e escolher **GPU (T4)**.
+2. Colocar os pesos em `weights/` e ajustar os caminhos do Drive no início do notebook (`SEG_BACKUP_ZIP`, `CLS_BACKUP_ZIP`, `IMAGENS_DIR`).
+3. Executar as células em ordem. O notebook carrega os pesos prontos em vez de retreinar.
+
+Os notebooks de treino (`treino_colab_milho_segmentacao.ipynb` e `treino_colab_milho_v3.ipynb`) precisam do dataset exportado do Roboflow (formato COCO Segmentation para o segmentador, Folder Structure para o classificador).
+
+Dependências: ver `requirements.txt`.
+
+## Limitações
+
+- O rótulo `unhealthy` corresponde à presença de adesivo. O classificador foi avaliado como detector de sintomas simulados, e o reconhecimento de doenças reais não foi testado.
+- A divisão em treino, validação e teste do classificador foi estratificada por classe e feita por recorte, e não por foto de origem. Recortes de uma mesma foto aparecem em conjuntos diferentes, o que torna as métricas do classificador otimistas.
+- O recall do segmentador (0,672 na máscara) limita o que chega ao classificador: cerca de um terço das plantas anotadas não é segmentado.
+- Classificação binária: não distingue doença de praga nem identifica a causa.
+- Diversidade limitada de cultivares, estágios e condições de luz.
+
+## Licença
+
+Os modelos foram treinados com a biblioteca Ultralytics, licenciada sob AGPL-3.0. Pesos e código derivados seguem a mesma licença.
