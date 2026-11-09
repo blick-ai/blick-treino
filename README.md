@@ -30,7 +30,7 @@ Cada foto passa por três estágios:
 - **Rótulo `unhealthy`:** plantas com um adesivo fixado na folha simulando sintoma (retângulo ou bolinha, amarelo ou marrom). Plantas sem adesivo são `healthy`.
 - Os arquivos de recorte seguem o padrão `<id_da_foto_original>_plant<n>.jpg`.
 
-O dataset não está nas pastas do repositório (tamanho e licença das imagens públicas). Os dois zips estão no [Release `dataset-v1`](https://github.com/blick-ai/blick-treino/releases/tag/dataset-v1): `blick-corn-analyzer.zip` (segmentação, COCO) e `blick-healthy-unhealthy.folder.zip` (classificação, Folder Structure).
+O dataset não está nas pastas do repositório (tamanho e licença das imagens públicas). Os dois zips estão no [Release `dataset-v1`](https://github.com/blick-ai/blick-treino/releases/tag/dataset-v1): `blick-corn-analyzer.zip` (segmentação, COCO) e `blick-classification.zip` (classificação, Folder Structure).
 
 ## Treinamento
 
