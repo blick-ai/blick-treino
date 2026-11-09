@@ -30,7 +30,7 @@ Cada foto passa por três estágios:
 - **Rótulo `unhealthy`:** plantas com um adesivo fixado na folha simulando sintoma (retângulo ou bolinha, amarelo ou marrom). Plantas sem adesivo são `healthy`.
 - Os arquivos de recorte seguem o padrão `<id_da_foto_original>_plant<n>.jpg`.
 
-O dataset não está no repositório (tamanho e licença das imagens públicas).
+O dataset não está nas pastas do repositório (tamanho e licença das imagens públicas). Os dois zips estão no [Release `dataset-v1`](https://github.com/blick-ai/blick-treino/releases/tag/dataset-v1): `blick-corn-analyzer.zip` (segmentação, COCO) e `blick-healthy-unhealthy.folder.zip` (classificação, Folder Structure).
 
 ## Treinamento
 
@@ -74,7 +74,7 @@ As curvas de loss (treino vs validação) dos dois modelos estão em `resultados
 
 ## Como rodar
 
-**Caminho rápido, sem Google Drive:** clique no botão do Colab no topo deste README (ou abra `notebooks/pipeline_milho_executavel.ipynb` no Colab) e use *Ambiente de execução > Executar tudo*. O notebook baixa este repositório (pesos e fotos de exemplo), roda o pipeline nas fotos de `exemplos/entrada`, mostra as curvas de loss e as matrizes de confusão dos dois modelos e traz, no final, células de treino opcionais (desligadas por padrão, precisam do dataset e de GPU). Funciona em CPU, e com GPU (T4) fica mais rápido.
+**Caminho rápido, sem Google Drive:** clique no botão do Colab no topo deste README (ou abra `notebooks/pipeline_milho_executavel.ipynb` no Colab) e use *Ambiente de execução > Executar tudo*. O notebook baixa este repositório (pesos e fotos de exemplo), roda o pipeline nas fotos de `exemplos/entrada`, mostra as curvas de loss e as matrizes de confusão dos dois modelos e traz, na seção 8, um treino ao vivo do classificador (baixa o dataset do Release e treina 3 épocas, uns minutos com GPU). O treino completo, opcional, fica na seção 9. Funciona em CPU, e com GPU (T4) fica mais rápido.
 
 ## Estrutura do repositório
 
