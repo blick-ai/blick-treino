@@ -1,5 +1,7 @@
 # Blick IA: segmentação e classificação da saúde de plantas de milho
 
+[![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/blick-ai/blick-treino/blob/main/notebooks/pipeline_milho_executavel.ipynb)
+
 Parte de visão computacional do projeto Blick, TCC do Instituto Mauá de Tecnologia (grupo CMD04, 2026). O sistema completo tem um robô de coleta georreferenciada, uma API na nuvem e um dashboard. Este repositório reúne apenas os dois modelos de rede neural, os notebooks de treino e os resultados.
 
 ## O que o pipeline faz
