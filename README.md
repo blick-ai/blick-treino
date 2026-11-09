@@ -1,8 +1,8 @@
 # Blick IA: segmentação e classificação da saúde de plantas de milho
 
-[![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/blick-ai/blick-treino/blob/main/notebooks/pipeline_milho_executavel.ipynb)
-
 Parte de visão computacional do projeto Blick, TCC do Instituto Mauá de Tecnologia (grupo CMD04, 2026). O sistema completo tem um robô de coleta georreferenciada, uma API na nuvem e um dashboard. Este repositório reúne apenas os dois modelos de rede neural, os notebooks de treino e os resultados.
+
+[![Abrir no Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/blick-ai/blick-treino/blob/main/notebooks/pipeline_milho_executavel.ipynb)
 
 ## O que o pipeline faz
 
@@ -74,13 +74,24 @@ As curvas de loss (treino vs validação) dos dois modelos estão em `resultados
 
 ## Como rodar
 
-1. Abrir `notebooks/pipeline_milho_completo.ipynb` no Google Colab e escolher **GPU (T4)**.
-2. Colocar os pesos em `weights/` e ajustar os caminhos do Drive no início do notebook (`SEG_BACKUP_ZIP`, `CLS_BACKUP_ZIP`, `IMAGENS_DIR`).
-3. Executar as células em ordem. O notebook carrega os pesos prontos em vez de retreinar.
+**Caminho rápido, sem Google Drive:** clique no botão do Colab no topo deste README (ou abra `notebooks/pipeline_milho_executavel.ipynb` no Colab) e use *Ambiente de execução > Executar tudo*. O notebook baixa este repositório (pesos e fotos de exemplo), roda o pipeline nas fotos de `exemplos/entrada`, mostra as curvas de loss e as matrizes de confusão dos dois modelos e traz, no final, células de treino opcionais (desligadas por padrão, precisam do dataset e de GPU). Funciona em CPU, e com GPU (T4) fica mais rápido.
 
-Os notebooks de treino (`treino_colab_milho_segmentacao.ipynb` e `treino_colab_milho_v3.ipynb`) precisam do dataset exportado do Roboflow (formato COCO Segmentation para o segmentador, Folder Structure para o classificador).
+## Estrutura do repositório
 
-Dependências: ver `requirements.txt`.
+```
+notebooks/
+  pipeline_milho_executavel.ipynb            inferência + resultados + treino opcional (sem Drive)
+  pipeline_milho_completo.ipynb              versão original, usa Google Drive
+  treino_colab_milho_segmentacao.ipynb       treino do segmentador
+  treino_colab_milho_classificacao.ipynb     treino do classificador
+weights/
+  segmentacao_best.pt                        pesos do yolo26n-seg
+  classificacao_best.pt                      pesos do yolo26n-cls
+resultados/                                  curvas, matrizes, args.yaml e relatórios dos dois treinos
+exemplos/entrada/                            fotos de exemplo usadas pelo notebook
+```
+
+Os notebooks de treino precisam do dataset exportado do Roboflow (formato COCO Segmentation para o segmentador, Folder Structure para o classificador). Dependências: ver `requirements.txt`.
 
 ## Limitações
 
