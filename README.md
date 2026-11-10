@@ -74,7 +74,7 @@ As curvas de loss (treino vs validação) dos dois modelos estão em `resultados
 
 ## Como rodar
 
-**Caminho rápido, sem Google Drive:** clique no botão do Colab no topo deste README (ou abra `notebooks/pipeline_milho_executavel.ipynb` no Colab) e use *Ambiente de execução > Executar tudo*. O notebook baixa este repositório (pesos e fotos de exemplo), roda o pipeline nas fotos de `exemplos/entrada`, mostra as curvas de loss e as matrizes de confusão dos dois modelos e traz, na seção 8, um treino ao vivo do classificador (baixa o dataset do Release e treina 3 épocas, uns minutos com GPU). O treino completo, opcional, fica na seção 9. Funciona em CPU, e com GPU (T4) fica mais rápido.
+**Caminho rápido, sem Google Drive:** clique no botão do Colab no topo deste README (ou abra `notebooks/pipeline_milho_executavel.ipynb` no Colab) e use *Ambiente de execução > Executar tudo*. O notebook baixa este repositório e vem em duas partes. **Treino (seções 2 a 4):** um treino ao vivo (uma rede pequena escrita à mão e o classificador YOLO26 com o dataset do Release, 3 épocas, uns minutos com GPU), as curvas e matrizes de confusão dos dois modelos finais e, opcionalmente, o treino completo dos dois modelos. **Inferência (seções 5 a 9):** carrega os pesos de `weights/`, roda o pipeline nas fotos de `images_test/` e mostra o resultado por planta. Funciona em CPU, e com GPU (T4) fica mais rápido.
 
 ## Estrutura do repositório
 
@@ -88,7 +88,7 @@ weights/
   segmentacao_best.pt                        pesos do yolo26n-seg
   classificacao_best.pt                      pesos do yolo26n-cls
 resultados/                                  curvas, matrizes, args.yaml e relatórios dos dois treinos
-exemplos/entrada/                            fotos de exemplo usadas pelo notebook
+images_test/                               fotos de exemplo usadas pelo notebook
 ```
 
 Os notebooks de treino precisam do dataset exportado do Roboflow (formato COCO Segmentation para o segmentador, Folder Structure para o classificador). Dependências: ver `requirements.txt`.
