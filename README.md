@@ -89,6 +89,7 @@ weights/
   classificacao_best.pt                      pesos do yolo26n-cls
 resultados/                                  curvas, matrizes, args.yaml e relatórios dos dois treinos
 images_test/                               fotos de exemplo usadas pelo notebook
+runs_demo/demo_treino_ao_vivo/             resultado do treino demonstrativo (pesos e curvas); com ele o notebook não retreina
 ```
 
 Os notebooks de treino precisam do dataset exportado do Roboflow (formato COCO Segmentation para o segmentador, Folder Structure para o classificador). Dependências: ver `requirements.txt`.
