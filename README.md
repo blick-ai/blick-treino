@@ -72,6 +72,18 @@ Acurácia 97,46%, AUC-ROC 0,9756, AP da classe `unhealthy` 0,9252. Matriz de con
 
 As curvas de loss (treino vs validação) dos dois modelos estão em `resultados/`.
 
+## Treino demonstrativo (seção 2 do notebook)
+
+O notebook treina o classificador `yolo26n-cls` ao vivo com o dataset real e os mesmos hiperparâmetros do treino final (224x224, lote 64), mas por apenas 3 épocas, para caber numa aula. O resultado fica salvo em `weights/demo_treino_cls.pt` e `resultados/demo_treino_ao_vivo/`, e por isso o notebook não retreina quando esses arquivos existem.
+
+| Época | Loss de treino | Loss de validação | Acurácia de validação |
+|---|---|---|---|
+| 1 | 0,2966 | 0,2277 | 92,0% |
+| 2 | 0,2123 | 0,1744 | 94,2% |
+| 3 | 0,1758 | 0,1273 | 95,8% |
+
+Cada época levou cerca de 2 minutos numa GPU do Colab (3 épocas em torno de 7 minutos). Este treino é só uma demonstração: o modelo final (`weights/classificacao_best.pt`, 97,46% de acurácia no teste) foi treinado por 72 épocas. Para treinar de novo ao vivo, mude `REFAZER_TREINO_DEMO` para `True` na célula 2.2.
+
 ## Como rodar
 
 **Caminho rápido, sem Google Drive:** clique no botão do Colab no topo deste README (ou abra `notebooks/pipeline_milho_executavel.ipynb` no Colab) e use *Ambiente de execução > Executar tudo*. O notebook baixa este repositório e vem em duas partes. **Treino (seções 2 a 4):** um treino ao vivo (uma rede pequena escrita à mão e o classificador YOLO26 com o dataset do Release, 3 épocas, uns minutos com GPU), as curvas e matrizes de confusão dos dois modelos finais e, opcionalmente, o treino completo dos dois modelos. **Inferência (seções 5 a 9):** carrega os pesos de `weights/`, roda o pipeline nas fotos de `images_test/` e mostra o resultado por planta. Funciona em CPU, e com GPU (T4) fica mais rápido.
@@ -87,9 +99,9 @@ notebooks/
 weights/
   segmentacao_best.pt                        pesos do yolo26n-seg
   classificacao_best.pt                      pesos do yolo26n-cls
+  demo_treino_cls.pt                         resultado salvo do treino demonstrativo (3 épocas); com ele o notebook não retreina
 resultados/                                  curvas, matrizes, args.yaml e relatórios dos dois treinos
 images_test/                               fotos de exemplo usadas pelo notebook
-runs_demo/demo_treino_ao_vivo/             resultado do treino demonstrativo (pesos e curvas); com ele o notebook não retreina
 ```
 
 Os notebooks de treino precisam do dataset exportado do Roboflow (formato COCO Segmentation para o segmentador, Folder Structure para o classificador). Dependências: ver `requirements.txt`.
